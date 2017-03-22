@@ -2,6 +2,7 @@
 using System.Numerics;
 using FrameRateControlExperiment60.Common;
 using Windows.UI.Input.Spatial;
+using System.Diagnostics;
 
 namespace FrameRateControlExperiment60.Content
 {
@@ -125,7 +126,7 @@ namespace FrameRateControlExperiment60.Content
             var context = this.deviceResources.D3DDeviceContext;
             
             // Each vertex is one instance of the VertexPositionColor struct.
-            int stride = SharpDX.Utilities.SizeOf<VertexPositionColor>();
+            int stride = SharpDX.Utilities.SizeOf<ColoredVertex>();
             int offset = 0;
             var bufferBinding = new SharpDX.Direct3D11.VertexBufferBinding(this.vertexBuffer, stride, offset);
             context.InputAssembler.SetVertexBuffers(0, bufferBinding);
@@ -184,7 +185,10 @@ namespace FrameRateControlExperiment60.Content
             var vertexShaderFileName = usingVprtShaders ? "Content\\Shaders\\VPRTVertexShader.cso" : "Content\\Shaders\\VertexShader.cso";
 
             // Load the compiled vertex shader.
-            var vertexShaderByteCode = await DirectXHelper.ReadDataAsync(await folder.GetFileAsync(vertexShaderFileName));
+            var vs = await folder.GetFileAsync(vertexShaderFileName);
+            Debug.WriteLine(vs.Name);
+
+            var vertexShaderByteCode = await DirectXHelper.ReadDataAsync(vs);
 
             // After the vertex shader file is loaded, create the shader and input layout.
             vertexShader = this.ToDispose(new SharpDX.Direct3D11.VertexShader(
@@ -225,16 +229,16 @@ namespace FrameRateControlExperiment60.Content
             // Note that the cube size has changed from the default DirectX app
             // template. Windows Holographic is scaled in meters, so to draw the
             // cube at a comfortable size we made the cube width 0.2 m (20 cm).
-            VertexPositionColor[] cubeVertices =
+            ColoredVertex[] cubeVertices =
             {
-                new VertexPositionColor(new Vector3(-0.1f, -0.1f, -0.1f), new Vector3(0.0f, 0.0f, 0.0f)),
-                new VertexPositionColor(new Vector3(-0.1f, -0.1f,  0.1f), new Vector3(0.0f, 0.0f, 1.0f)),
-                new VertexPositionColor(new Vector3(-0.1f,  0.1f, -0.1f), new Vector3(0.0f, 1.0f, 0.0f)),
-                new VertexPositionColor(new Vector3(-0.1f,  0.1f,  0.1f), new Vector3(0.0f, 1.0f, 1.0f)),
-                new VertexPositionColor(new Vector3( 0.1f, -0.1f, -0.1f), new Vector3(1.0f, 0.0f, 0.0f)),
-                new VertexPositionColor(new Vector3( 0.1f, -0.1f,  0.1f), new Vector3(1.0f, 0.0f, 1.0f)),
-                new VertexPositionColor(new Vector3( 0.1f,  0.1f, -0.1f), new Vector3(1.0f, 1.0f, 0.0f)),
-                new VertexPositionColor(new Vector3( 0.1f,  0.1f,  0.1f), new Vector3(1.0f, 1.0f, 1.0f)),
+                new ColoredVertex(new Vector3(-0.1f, -0.1f, -0.1f), new Vector3(0.0f, 0.0f, 0.0f)),
+                new ColoredVertex(new Vector3(-0.1f, -0.1f,  0.1f), new Vector3(0.0f, 0.0f, 1.0f)),
+                new ColoredVertex(new Vector3(-0.1f,  0.1f, -0.1f), new Vector3(0.0f, 1.0f, 0.0f)),
+                new ColoredVertex(new Vector3(-0.1f,  0.1f,  0.1f), new Vector3(0.0f, 1.0f, 1.0f)),
+                new ColoredVertex(new Vector3( 0.1f, -0.1f, -0.1f), new Vector3(1.0f, 0.0f, 0.0f)),
+                new ColoredVertex(new Vector3( 0.1f, -0.1f,  0.1f), new Vector3(1.0f, 0.0f, 1.0f)),
+                new ColoredVertex(new Vector3( 0.1f,  0.1f, -0.1f), new Vector3(1.0f, 1.0f, 0.0f)),
+                new ColoredVertex(new Vector3( 0.1f,  0.1f,  0.1f), new Vector3(1.0f, 1.0f, 1.0f)),
             };
 
             vertexBuffer = this.ToDispose(SharpDX.Direct3D11.Buffer.Create(

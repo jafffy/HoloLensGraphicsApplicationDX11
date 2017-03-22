@@ -2,6 +2,7 @@
 #include "AppView.h"
 
 #include <ppltasks.h>
+#include <iomanip>
 
 using namespace FrameRateControlExperimentCpp;
 
@@ -96,8 +97,30 @@ void AppView::Load(Platform::String^ entryPoint)
 // update, draw, and present loop, and it also oversees window message processing.
 void AppView::Run()
 {
+    LARGE_INTEGER performanceFrequency, lastTime;
+    ZeroMemory(&performanceFrequency, sizeof(performanceFrequency));
+    QueryPerformanceFrequency(&performanceFrequency);
+
+    QueryPerformanceCounter(&lastTime);
+
     while (!m_windowClosed)
     {
+        LARGE_INTEGER currentTime;
+        QueryPerformanceCounter(&currentTime);
+
+        double elapsedTime = (currentTime.QuadPart - lastTime.QuadPart) * 1000000.0 / performanceFrequency.QuadPart / 1000000.0;
+        double targetFPS = 60;
+        double desiredTime = 1.0f / targetFPS;
+        if (elapsedTime < desiredTime)
+        {
+            OutputDebugStringA(std::to_string(1 / elapsedTime).c_str());
+            OutputDebugStringA("\n");
+
+            Sleep((desiredTime - elapsedTime) * 1000);
+        }
+
+        lastTime = currentTime;
+
         if (m_windowVisible && (m_holographicSpace != nullptr))
         {
             CoreWindow::GetForCurrentThread()->Dispatcher->ProcessEvents(CoreProcessEventsOption::ProcessAllIfPresent);
@@ -124,7 +147,7 @@ void AppView::Run()
 // holographic apps.
 void AppView::Uninitialize()
 {
-
+    
 }
 
 

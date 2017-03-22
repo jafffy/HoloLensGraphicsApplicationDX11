@@ -4,6 +4,8 @@
 #include <ppltasks.h>
 #include <iomanip>
 
+#include "GlobalVariables.h"
+
 using namespace FrameRateControlExperimentCpp;
 
 using namespace concurrency;
@@ -103,13 +105,23 @@ void AppView::Run()
 
     QueryPerformanceCounter(&lastTime);
 
-    while (!m_windowClosed)
+    while ( !m_windowClosed )
     {
+        double targetFPS = 60;
+
+        if ( GlobalVariables::getInstance().isMoving() )
+        {
+            targetFPS = 60;
+        }
+        else
+        {
+            targetFPS = 10;
+        }
+
         LARGE_INTEGER currentTime;
         QueryPerformanceCounter(&currentTime);
 
         double elapsedTime = (currentTime.QuadPart - lastTime.QuadPart) * 1000000.0 / performanceFrequency.QuadPart / 1000000.0;
-        double targetFPS = 60;
         double desiredTime = 1.0f / targetFPS;
         if (elapsedTime < desiredTime)
         {

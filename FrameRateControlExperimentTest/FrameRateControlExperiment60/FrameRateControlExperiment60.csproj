@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{029a98b8-8e5c-4a4e-a959-52cca7aa27c9}</ProjectGuid>
+    <ProjectGuid>{029A98B8-8E5C-4A4E-A959-52CCA7AA27C9}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>FrameRateControlExperiment60</RootNamespace>
@@ -16,9 +16,7 @@
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    
     <PackageCertificateKeyFile>FrameRateControlExperiment60_TemporaryKey.pfx</PackageCertificateKeyFile>
-    
     <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
@@ -44,9 +42,13 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <Content Include="Assets\bunny.mtl" />
+    <Content Include="Assets\bunny.obj" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Content\WaveFrontModel.cs" />
+    <Compile Include="Content\WaveFrontModelRenderer.cs" />
     <Compile Include="FrameRateControlExperiment60Main.cs" />
     <Compile Include="AppView.cs" />
     <Compile Include="AppViewSource.cs" />
@@ -66,11 +68,11 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    
     <None Include="FrameRateControlExperiment60_TemporaryKey.pfx" />
-    
   </ItemGroup>
   <ItemGroup>
+    <VertexShader Include="Content\Shaders\VertexShaderWithNormal.hlsl" />
+    <VertexShader Include="Content\Shaders\VPRTVertexShaderWithNormal.hlsl" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
   <ItemGroup>

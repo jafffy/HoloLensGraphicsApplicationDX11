@@ -6,6 +6,7 @@
 #include <Collection.h>
 
 #include "tiny_obj_loader.h"
+#include "GlobalVariables.h"
 
 using namespace FrameRateControlExperimentCpp;
 
@@ -192,8 +193,11 @@ HolographicFrame^ FrameRateControlExperimentCppMain::Update()
 #ifdef DRAW_SAMPLE_CONTENT
     // Check for new input state since the last frame.
     SpatialInteractionSourceState^ pointerState = m_spatialInputHandler->CheckForInput();
+
     if (pointerState != nullptr)
     {
+        SpatialPointerPose^ pointerPose = pointerState->TryGetPointerPose(currentCoordinateSystem);
+
         // When a Pressed gesture is detected, the sample hologram will be repositioned
         // two meters in front of the user.
         m_spinningCubeRenderer->PositionHologram(
@@ -277,6 +281,7 @@ bool FrameRateControlExperimentCppMain::Render(Windows::Graphics::Holographic::H
         holographicFrame->UpdateCurrentPrediction();
         HolographicFramePrediction^ prediction = holographicFrame->CurrentPrediction;
 
+        bool isFirstCameraPose = true;
         bool atLeastOneCameraRendered = false;
         for (auto cameraPose : prediction->CameraPoses)
         {
@@ -331,6 +336,26 @@ bool FrameRateControlExperimentCppMain::Render(Windows::Graphics::Holographic::H
             }
 #endif
             atLeastOneCameraRendered = true;
+
+            Platform::IBox<HolographicStereoTransform>^ viewTransformContainer = cameraPose->TryGetViewTransform(m_referenceFrame->CoordinateSystem);
+
+            // Select only left camera
+            if (viewTransformContainer != nullptr && isFirstCameraPose)
+            {
+                using namespace ::Windows::Foundation::Numerics;
+
+                HolographicStereoTransform viewCoordinateSystemTransform = viewTransformContainer->Value;
+                float4x4 lvt = viewCoordinateSystemTransform.Left;
+
+                float3 headPosition = float3(lvt.m41, lvt.m42, lvt.m43);
+                float3 headForwardDirection = float3(lvt.m31, lvt.m32, lvt.m33); // Z-axis
+                
+                GlobalVariables::getInstance().setHeadPositionAndDirection(
+                    headPosition,
+                    headForwardDirection);
+
+                isFirstCameraPose = false;
+            }
         }
 
         return atLeastOneCameraRendered;

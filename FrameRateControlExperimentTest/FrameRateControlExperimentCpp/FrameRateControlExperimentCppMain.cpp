@@ -192,13 +192,14 @@ HolographicFrame^ FrameRateControlExperimentCppMain::Update()
 #ifdef DRAW_SAMPLE_CONTENT
     // Check for new input state since the last frame.
     SpatialInteractionSourceState^ pointerState = m_spatialInputHandler->CheckForInput();
+
     if (pointerState != nullptr)
     {
+        SpatialPointerPose^ pointerPose = pointerState->TryGetPointerPose(currentCoordinateSystem);
+
         // When a Pressed gesture is detected, the sample hologram will be repositioned
         // two meters in front of the user.
-        m_spinningCubeRenderer->PositionHologram(
-            pointerState->TryGetPointerPose(currentCoordinateSystem)
-            );
+        m_spinningCubeRenderer->PositionHologram(pointerPose);
     }
 #endif
 

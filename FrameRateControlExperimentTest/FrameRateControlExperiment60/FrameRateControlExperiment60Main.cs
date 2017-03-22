@@ -35,7 +35,8 @@ namespace FrameRateControlExperiment60
         // Renders a colorful holographic cube that's 20 centimeters wide. This sample content
         // is used to demonstrate world-locked rendering.
         private SpinningCubeRenderer        spinningCubeRenderer;
-        
+        private WaveFrontModelRenderer      waveFrontModelRenderer;
+
         private SpatialInputHandler         spatialInputHandler;
 #endif
 
@@ -53,7 +54,7 @@ namespace FrameRateControlExperiment60
 
         // A reference frame attached to the holographic camera.
         SpatialStationaryFrameOfReference   referenceFrame;
-        
+
         /// <summary>
         /// Loads and initializes application assets when the application is loaded.
         /// </summary>
@@ -78,6 +79,7 @@ namespace FrameRateControlExperiment60
 #if DRAW_SAMPLE_CONTENT
             // Initialize the sample hologram.
             spinningCubeRenderer = new SpinningCubeRenderer(deviceResources);
+            waveFrontModelRenderer = new WaveFrontModelRenderer(deviceResources);
 
             spatialInputHandler = new SpatialInputHandler();
 #endif
@@ -130,6 +132,11 @@ namespace FrameRateControlExperiment60
                 spinningCubeRenderer.Dispose();
                 spinningCubeRenderer = null;
             }
+            if (waveFrontModelRenderer != null)
+            {
+                waveFrontModelRenderer.Dispose();
+                waveFrontModelRenderer = null;
+            }
 #endif
         }
 
@@ -170,6 +177,8 @@ namespace FrameRateControlExperiment60
                 spinningCubeRenderer.PositionHologram(
                     pointerState.TryGetPointerPose(currentCoordinateSystem)
                     );
+                waveFrontModelRenderer.PositionHologram(
+                    pointerState.TryGetPointerPose(currentCoordinateSystem));
             }
 #endif
 
@@ -185,6 +194,7 @@ namespace FrameRateControlExperiment60
 
 #if DRAW_SAMPLE_CONTENT
                 spinningCubeRenderer.Update(timer);
+                waveFrontModelRenderer.Update(timer);
 #endif
             });
 
@@ -304,6 +314,7 @@ namespace FrameRateControlExperiment60
                     {
                         // Draw the sample hologram.
                         spinningCubeRenderer.Render();
+                        waveFrontModelRenderer.Render();
                     }
 #endif
                     atLeastOneCameraRendered = true;
@@ -342,6 +353,7 @@ namespace FrameRateControlExperiment60
 
 #if DRAW_SAMPLE_CONTENT
             spinningCubeRenderer.ReleaseDeviceDependentResources();
+            waveFrontModelRenderer.ReleaseDeviceDependentResources();
 #endif
 
         }
@@ -353,6 +365,7 @@ namespace FrameRateControlExperiment60
         {
 #if DRAW_SAMPLE_CONTENT
             spinningCubeRenderer.CreateDeviceDependentResourcesAsync();
+            waveFrontModelRenderer.CreateDeviceDependentResourcesAsync();
 #endif
         }
 

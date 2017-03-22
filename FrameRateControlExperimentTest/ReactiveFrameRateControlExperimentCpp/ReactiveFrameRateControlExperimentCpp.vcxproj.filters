@@ -68,6 +68,7 @@
     <ClCompile Include="Content\MeshRenderer.cpp">
       <Filter>Content</Filter>
     </ClCompile>
+    <ClCompile Include="GlobalVariables.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -86,6 +87,7 @@
     <ClInclude Include="Content\MeshRenderer.h">
       <Filter>Content</Filter>
     </ClInclude>
+    <ClInclude Include="GlobalVariables.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Content\VertexShader.hlsl">
